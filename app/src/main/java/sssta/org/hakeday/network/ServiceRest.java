@@ -1,5 +1,8 @@
 package sssta.org.hakeday.network;
 
+
+import java.util.concurrent.TimeUnit;
+
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
@@ -26,6 +29,8 @@ public class ServiceRest {
         httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         OkHttpClient c
                 = new OkHttpClient.Builder()
+                .readTimeout(15, TimeUnit.SECONDS)
+                .writeTimeout(15, TimeUnit.SECONDS)
                 .addInterceptor(httpLoggingInterceptor)
                 .build();
         retrofit = new Retrofit.Builder()
