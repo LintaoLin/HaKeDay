@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,height=device-height, initial-scale=1">
+    <title>Title</title>
+    <script type="application/javascript" src="./node_modules/konva/konva.min.js"></script>
+    <script type="text/css">
+        #container {
+            margin: 8px;
+        }
+    </script>
+</head>
+<body>
+<div id="container"></div>
+
+   <script>
+
+       //创建一个舞台
+       var stage = new Konva.Stage({
+           container: 'container',
+           width: window.innerWidth,
+           height: window.innerHeight
+       });
+
+       // then create layer *然后创建一个图层
+       var layer = new Konva.Layer();
+
+       //在顶部循环创建三个按钮
+       var circle_text = ["物理伤害", "精神暴击", "炼狱折磨"];
+       var bglayer = new Konva.Layer();
+
+       for(var i = 0;i < 3;i++){
+
+
+           var x_distance = stage.getWidth() / 6;
+           console.log(x_distance);
+
+           var imageObj = new Image();
+           imageObj.src = "./assets/test.jpg";
+           imageObj.onload = function () {
+               var ko_image = new Konva.Image({
+                   x: 0,
+                   y: 0,
+                   width: stage.getWidth(),
+                   height: stage.getHeight(),
+                   image: imageObj
+               });
+               bglayer.add(ko_image);
+               bglayer.draw();
+           };
+
+           let circle = new Konva.Circle({
+               x: x_distance * i * 2 + x_distance,
+               y: stage.getHeight() * 0.1,
+               radius: x_distance * 0.5,
+               stroke: 'black',
+               strokeWidth: 4
+           });
+
+           var text = new Konva.Text({
+               x: circle.x() - circle.radius() * 0.4,
+               y: circle.y() - circle.radius() * 0.4,
+               text: circle_text[i],
+               width: circle.radius()
+
+           });
+
+           let little_circle_array = [];
+           for(var j = 0;j < 3;j++){
+               var little_circle = new Konva.Circle({
+                   x: x_distance * i * 2 + x_distance,
+                   y: stage.getHeight() * 0.1,
+                   radius: x_distance * 0.2,
+                   stroke: 'black',
+                   strokeWidth: 4,
+                   visible: false
+               });
+               layer.add(little_circle);
+               little_circle_array.push(little_circle);
+           }
+
+           var click_function = function () {
+               if(little_circle_array[0].visible()){
+                   for(var j = 0;j < 3;j++) {
+                       var tween = new Konva.Tween({
+                           node: little_circle_array[j],
+                           duration: 0,
+                           x: circle.x(),
+                           y: circle.y()
+                       });
+                       tween.play();
+                       little_circle_array[j].hide();
+                   }
+               }
+               else{
+                   var imageObj = new Image();
+                   imageObj.src = "./assets/test2.jpg";
+                   imageObj.onload = function () {
+                       var ko_image = new Konva.Image({
+                           x: 0,
+                           y: 0,
+                           width: stage.getWidth(),
+                           height: stage.getHeight(),
+                           image: imageObj
+                       });
+                       bglayer.add(ko_image);
+                       bglayer.draw();
+                   };
+
+
+                   for(var j = 0;j < 3;j++){
+                       little_circle_array[j].show();
+                   }
+
+                   layer.draw();
+
+                   var xy_result = [];
+                   xy_result.push([circle.x() - x_distance * 1 * 0.5, circle.y() + x_distance * 1 * Math.sin(Math.PI / 3)]);
+                   xy_result.push([circle.x(), circle.y() + x_distance * 1]);
+                   xy_result.push([circle.x() + x_distance * 1 * 0.5, circle.y() + x_distance * 1 * Math.sin(Math.PI / 3)]);
+
+                   for(var j = 0;j < 3;j++) {
+                       var tween = new Konva.Tween({
+                           node: little_circle_array[j],
+                           duration: 0.5,
+                           x: xy_result[j][0],
+                           y: xy_result[j][1]
+                       });
+                       tween.play();
+                   }
+               }
+           };
+
+           circle.on("touchstart", click_function);
+           text.on("touchstart", click_function);
+
+           var wedge = new Konva.Wedge({
+               x: x_distance * i * 2 + x_distance,
+               y: stage.getHeight() * 0.1,
+               radius: x_distance * 1.5,
+               angle: 60,
+               rotation: 60,
+           });
+
+           layer.add(circle);
+           layer.add(text);
+           layer.add(wedge);
+       }
+
+       // add the layer to the stage *将图层添加到舞台上
+       stage.add(bglayer);
+       stage.add(layer);
+
+   </script>
+</body>
+</html>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:paddingLeft="20dp"
+    android:paddingRight="20dp"
+    android:layout_marginBottom="10dp"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:layout_marginTop="1dp"
+        android:id="@+id/text_title"
+        android:textSize="15sp"
+        android:textColor="@color/textPrimaryColor"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:text="指名亚种"
+        />
+
+    <TextView
+        android:layout_marginTop="1dp"
+        android:lineSpacingExtra="2dp"
+        android:id="@+id/text_content"
+        android:textSize="12sp"
+        android:textColor="@color/textPrimaryColor"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:text="美洲蟾蜍指名亚种（B. a. americanus）是一种中等体型的蟾蜍，长5-9厘米。身体颜色及式样多变。它们会于冬天冬眠。身体上的斑点上包含1-2个疙瘩。在胫骨位置有较大的疙瘩。腹部一般都有斑点，前端较多。 其他容易与指名亚种混淆的物种包括福勒蟾蜍及庭园蟾蜍。福勒蟾蜍很难与美洲蟾蜍分辨，它们腹部没有斑点，颅冠接触腮腺。美洲蟾蜍的颅冠完全不接触腮腺。它们所分泌的毒素的毒性相对较温和，但也可以刺激人类皮肤及对细小的动物有危险。 美洲蟾蜍需要半永久的淡水湖来进行高期发育。它们需要密林来覆盖作保护。只有满足这两项条件及有足以的食物供应，它们可以栖息在任何地方。美洲蟾蜍在花园及农地也很普遍。日间它们会躲在门廊、木板人行道、石底、木柱等。冬天时，它们会挖穴将自己藏起或寻找另一地方冬眠。它们会吃蟋蟀、黄粉虫、蚯蚓、蚂蚁、蜘蛛、蛞蝓、百足及其他细小的脊椎动物。"
+        />
+
+</LinearLayout>

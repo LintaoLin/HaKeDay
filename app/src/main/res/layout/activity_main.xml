@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/home_bg"
+    tools:context="sssta.org.hakeday.activity.MainActivity">
+
+
+    <sssta.org.hakeday.RecordLayout
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:onClick="toggleRecord"
+        android:id="@+id/record_button"
+        android:layout_width="180dp"
+        android:layout_height="180dp"
+        app:layout_constraintHorizontal_bias="0.80"
+        app:layout_constraintVertical_bias="0.43"
+        >
+
+    </sssta.org.hakeday.RecordLayout>
+
+    <ImageView
+        android:onClick="toWikiList"
+        android:src="@drawable/wiki_bg"
+        android:layout_width="90dp"
+        android:layout_height="90dp"
+        android:layout_marginLeft="8dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginRight="8dp"
+        app:layout_constraintHorizontal_bias="0.196"
+        app:layout_constraintVertical_bias="0.186" />
+    <ImageView
+        android:onClick="startWeb"
+        android:src="@drawable/user_bg"
+        android:layout_width="90dp"
+        android:layout_height="90dp"
+        android:layout_marginLeft="8dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginRight="8dp"
+        app:layout_constraintHorizontal_bias="0.23"
+        app:layout_constraintVertical_bias="0.755" />
+
+    <ImageView
+        android:onClick="toTopList"
+        android:src="@drawable/history_bg"
+        android:layout_width="90dp"
+        android:layout_height="90dp"
+        android:layout_marginLeft="8dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginRight="8dp"
+        app:layout_constraintHorizontal_bias="0.811"
+        app:layout_constraintVertical_bias="0.878" />
+
+    <ImageView
+        android:onClick="chooseLocalFile"
+        android:src="@drawable/upload_bg"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginLeft="8dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginRight="8dp"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintVertical_bias="0.549" />
+
+
+
+    <!--<com.airbnb.lottie.LottieAnimationView-->
+        <!--android:id="@+id/lottie_view"-->
+        <!--app:lottie_fileName="data.json"-->
+        <!--app:lottie_loop="true"-->
+        <!--app:lottie_autoPlay="true"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content" />-->
+
+</android.support.constraint.ConstraintLayout>

@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,height=device-height, initial-scale=1">
+    <title>Title</title>
+    <script type="application/javascript" src="./node_modules/konva/konva.min.js"></script>
+    <link rel="stylesheet" href="rest.css"/>
+    <script type="text/css">
+        body {
+            margin: 0;
+        }
+        #container {
+            width: 322px;
+            height: 530px;
+        }
+    </script>
+</head>
+<body>
+    <div id="container"></div>
+    <script type="text/javascript">
+        var text = null;
+        var hammer = null;
+
+        //预先创建好Image对象，加载完毕之后，再进行layer和stage的创建
+        function LoadImages(image_sources, callback){
+            var images = [];
+            var loaded_images = 0;
+            var num_images = image_sources.length;
+
+            for(var i = 0;i < num_images;i++){
+                var image_obj = new Image();
+                image_obj.src = image_sources[i];
+                images.push(image_obj);
+
+                image_obj.onload = function () {
+                    loaded_images++;
+                    if(loaded_images >= num_images){
+                        images[9].width = 50;
+                        images[9].height = 50;
+
+                        callback({
+                            background: [images[0], images[1], images[2]],
+                            button: [images[3], images[4], images[5]],
+                            frog: [images[6], images[7], images[8]],
+                            hammer: images[9]
+                        });
+                    }
+                }
+            }
+        }
+
+        function convertKonvaImagBlueClur(source, stage) {
+            source.width = stage.getWidth();
+            source.height = stage.getHeight();
+            var image = new Konva.Image({
+                x: 0,
+                y: 0,
+                width: stage.getWidth(),
+                height: stage.getHeight(),
+                image: source
+            });
+
+            /*
+            image.cache({
+                width: source.width,
+                height: source.height
+            });
+            */
+
+            image.filters([Konva.Filters.Blur]);
+            image.blurRadius(20);
+            return image
+        }
+
+        function callback(images) {
+            //创建一个stage
+            var stage = new Konva.Stage({
+                container: 'container',
+                width: window.innerWidth,
+                height: window.innerHeight
+            });
+
+            //创建三个layer，一个用于展示背景，一个用于展示按钮和动画
+            var bg_layer = new Konva.Layer();
+            var anim_layer = new Konva.Layer();
+            //var frog_layer = new Konva.Layer();
+
+            //背景layer加载初始图片并模糊
+            bg_layer.add(convertKonvaImagBlueClur(images.background[0], stage));
+            bg_layer.batchDraw();
+
+            //绘制三个按钮图片
+            var basic_button_dis = stage.getWidth() / 6;
+            var konva_button_image = [];
+
+            for(var i = 0;i < 3;i++){
+                konva_button_image.push(new Konva.Image({
+                    x: basic_button_dis * (2 * i + 1) - basic_button_dis * 0.5,
+                    y: stage.getHeight() * 0.1,
+                    width: basic_button_dis,
+                    height: basic_button_dis,
+                    image: images.button[i]
+                }));
+                anim_layer.add(konva_button_image[i]);
+            }
+
+            //分别绘制三个按钮的各自三个小按钮
+            var little_circle = [];
+
+            for(var i = 0;i < 3;i++){
+                little_circle.push([]);
+                for(var j = 0;j < 3;j++){
+
+                    var little = new Konva.Circle({
+                        x: basic_button_dis * i * 2 + basic_button_dis,
+                        y: stage.getHeight() * 0.1 + konva_button_image[0].height() * 0.5,
+                        radius: basic_button_dis * 0.2,
+                        stroke: 'black',
+                        strokeWidth: 2,
+                        visible: false,
+                    });
+                    anim_layer.add(little);
+                    little_circle[i].push(little);
+                }
+            }
+
+
+            //为每个大按钮注册回调函数
+
+            for(let i = 0;i < 3;i++){
+                //小按钮初始位置
+                let origin_x = basic_button_dis * i * 2 + basic_button_dis;
+                let origin_y = stage.getHeight() * 0.1 + konva_button_image[0].height() * 0.5;
+
+                var touch_func = function () {
+                    if(little_circle[i][0].visible()){
+                        //隐藏小按钮并回到原来位置
+                        for(var j = 0;j < 3;j++) {
+                            var tween = new Konva.Tween({
+                                node: little_circle[i][j],
+                                duration: 0,
+                                x: origin_x,
+                                y: origin_y
+                            });
+                            tween.play();
+                            little_circle[i][j].hide();
+                        }
+
+                        if(text != null && text.visible()){
+                            text.hide();
+                        }
+                    }
+                    else{
+                        //根据按钮改变背景
+                        bg_layer.add(convertKonvaImagBlueClur(images.background[i], stage));
+                        bg_layer.batchDraw();
+
+                        //回收别的按钮
+                        for(let o = 0;o < 3;o++){
+                            if(o != i){
+                                for(let j = 0;j < 3;j++) {
+                                    var tween = new Konva.Tween({
+                                        node: little_circle[o][j],
+                                        duration: 0,
+                                        x: basic_button_dis * o * 2 + basic_button_dis,
+                                        y: origin_y
+                                    });
+                                    tween.play();
+                                    little_circle[o][j].hide();
+                                }
+                            }
+                        }
+
+                        //使小按钮可见
+                        for(var j = 0;j < 3;j++){
+                            little_circle[i][j].show();
+                        }
+                        anim_layer.draw();
+
+                        //小按钮运动
+                        var xy_result = [];
+                        xy_result.push([origin_x - basic_button_dis * 1 * 0.5,
+                            origin_y + basic_button_dis * 1 * Math.sin(Math.PI / 3)]);
+                        xy_result.push([origin_x, origin_y + basic_button_dis * 1]);
+                        xy_result.push([origin_x + basic_button_dis * 1 * 0.5,
+                            origin_y + basic_button_dis * 1 * Math.sin(Math.PI / 3)]);
+
+                        for(var j = 0;j < 3;j++) {
+                            var tween = new Konva.Tween({
+                                node: little_circle[i][j],
+                                duration: 0.5,
+                                x: xy_result[j][0],
+                                y: xy_result[j][1]
+                            });
+                            tween.play();
+
+                            if(i == 0 && j == 0){
+                                //给第一个按钮添加文字
+                                if(text == null){
+                                    text = new Konva.Text({
+                                        x: xy_result[j][0] - 6,
+                                        y: xy_result[j][1] - 5,
+                                        text: "锤",
+                                        width: 15,
+                                        fontSize: 10
+                                    });
+                                    anim_layer.add(text);
+
+                                    //文字绑定锤子出现
+                                    text.on("touchstart", function () {
+                                        if(hammer == null){
+                                            hammer = new Konva.Image({
+                                                x: 150,
+                                                y: 320,
+                                                width: 150,
+                                                height: 150,
+                                                image: images.hammer,
+                                                offset: {
+                                                    x: 75,
+                                                    y: 125
+                                                }
+                                            });
+                                            anim_layer.add(hammer);
+                                            anim_layer.draw();
+                                        }
+                                    });
+                                }
+                                else{
+                                    text.show();
+                                    anim_layer.draw();
+                                }
+                            }
+                        }
+                    }
+                }
+                konva_button_image[i].on("touchstart", touch_func);
+            }
+
+
+            //添加青蛙图片
+
+            var frog = new Konva.Image({
+                x: 0,
+                y: 0,
+                width: stage.getWidth(),
+                height: stage.getHeight(),
+                image: images.frog[0]
+            });
+
+            frog.on("touchstart", function () {
+                if(hammer != null){
+                    var anim = new Konva.Animation(function(frame) {
+                        var angleDiff = frame.timeDiff * 90 / 1000 * -1;
+                        hammer.rotate(angleDiff);
+                    }, anim_layer);
+
+                    anim.start();
+
+                }
+                
+                setTimeout(function () {
+                    var new_frog = new Konva.Image({
+                        x: 0,
+                        y: 0,
+                        width: stage.getWidth(),
+                        height: stage.getHeight(),
+                        image: images.frog[1]
+                    });
+                    new_frog.on("touchstart", function () {
+                        if(hammer != null){
+                            var anim = new Konva.Animation(function(frame) {
+                                var angleDiff = frame.timeDiff * 90 / 1000 * -1;
+                                hammer.rotate(angleDiff);
+                            }, anim_layer);
+
+                            anim.start();
+
+                            setTimeout(function () {
+                                var last_frog = new Konva.Image({
+                                    x: 0,
+                                    y: 0,
+                                    width: stage.getWidth(),
+                                    height: stage.getHeight(),
+                                    image: images.frog[2]
+                                });
+                                last_frog.on("touchstart", function () {
+                                    if(hammer != null){
+                                        var anim = new Konva.Animation(function(frame) {
+                                            var angleDiff = frame.timeDiff * 90 / 1000 * -1;
+                                            hammer.rotate(angleDiff);
+                                        }, anim_layer);
+
+                                        anim.start();
+
+                                    }}
+                                );
+
+                                anim_layer.add(last_frog);
+                                last_frog.moveToTop();
+                                anim_layer.draw();
+                            }, 3000);
+
+                        }}
+                        );
+
+                    anim_layer.add(new_frog);
+                    new_frog.moveToTop();
+                    anim_layer.draw();
+                }, 2000);
+
+            });
+
+            anim_layer.add(frog);
+            frog.moveToBottom();
+            anim_layer.draw();
+
+
+            stage.add(bg_layer);
+            //stage.add(frog_layer);
+            stage.add(anim_layer);
+
+        }
+
+        var images_src = ["./assets/4.png", "./assets/5.png", "./assets/6.png",
+            "./assets/1.png", "./assets/2.png", "./assets/3.png", "./assets/7.svg", "./assets/8.svg",
+            "./assets/9.svg", "./assets/10.png"];
+
+        LoadImages(images_src, callback);
+
+
+    </script>
+</body>
+</html>
