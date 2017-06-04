@@ -27,7 +27,11 @@ public class WikiItem implements Serializable {
         }
         for (IdentifyResponse.ListBean.ContentBeanX c :
                 data) {
-            lables.add(c.getTitle());
+            if (c.getText() != null) {
+                lables.add(new Item(c.getTitle(),c.getText()));
+            } else {
+                lables.add(c.getTitle());
+            }
             convertContent(c.getContent());
         }
     }
